@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+  /*    .direction {
+        background-color: '#fff';
+        border: '2px solid #fff';
+        border-radius: '3px';
+        box-shadow:'0 2px 6px rgba(0,0,0,.3)';
+        cursor: 'pointer';
+        margin-bottom: '22px';
+        text-align: 'center';
+      }*/
+      
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+<!--     <div class="direction" title="321" ></div>
+ -->    <script>
+      var map;
+      var marker;
+      var myLoc = { lat: 25.013, lng: 121.541};
+      function CenterControl(controlDiv, map) {
+        // Set CSS for the control border.
+        var controlUI = document.createElement('div');
+        controlUI.style.backgroundColor = '#fff';
+        controlUI.style.border = '2px solid #fff';
+        controlUI.style.borderRadius = '3px';
+        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        controlUI.style.cursor = 'pointer';
+        controlUI.style.marginBottom = '22px';
+        controlUI.style.textAlign = 'center';
+        controlUI.style.width= "200px";
+        controlUI.style.height= "200px";
+        controlUI.style.borderRadius= "50%";
+        controlUI.title = 'Click to recenter the map';
+        controlDiv.appendChild(controlUI);
+
+        // Set CSS for the control interior.
+        var controlTextU = document.createElement('button');
+        // var child = document.createElement("i");         // Create a text node
+        // child.className = "fa fa-arrow-up";
+        // controlTextU.className = "fa fa-arrow-up";
+        controlTextU.style.color = 'rgb(25,25,25)';
+        controlTextU.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlTextU.style.fontSize = '16px';
+        controlTextU.style.lineHeight = '38px';
+        controlTextU.style.paddingLeft = '5px';
+        controlTextU.style.paddingRight = '5px';
+        controlTextU.innerHTML = 'Go Up';
+        controlUI.appendChild(controlTextU);
+
+         // Set CSS for the control interior.
+        var controlTextR = document.createElement('button');
+        // controlTextR.className ="arrow-up";
+        controlTextR.style.color = 'rgb(25,25,25)';
+        controlTextR.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlTextR.style.fontSize = '16px';
+        controlTextR.style.lineHeight = '38px';
+        controlTextR.style.paddingLeft = '5px';
+        controlTextR.style.paddingRight = '5px';
+        controlTextR.style.position = 'absolute';
+        controlTextR.style.top = '80px';
+        controlTextR.style.left = '123px';
+        controlTextR.innerHTML = 'Go Right';
+        controlUI.appendChild(controlTextR);
+
+
+
+        // Set CSS for the control interior.
+        var controlTextB = document.createElement('button');
+        controlTextB.style.color = 'rgb(25,25,25)';
+        controlTextB.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlTextB.style.fontSize = '16px';
+        controlTextB.style.lineHeight = '38px';
+        controlTextB.style.paddingLeft = '5px';
+        controlTextB.style.paddingRight = '5px';
+        controlTextB.style.position = 'absolute';
+        controlTextB.style.top = '160px';
+        controlTextB.style.left = '55px';
+        controlTextB.innerHTML = 'Go Bottom';
+        controlUI.appendChild(controlTextB);
+
+
+        // Set CSS for the control interior.
+        var controlTextL = document.createElement('button');
+        controlTextL.style.color = 'rgb(25,25,25)';
+        controlTextL.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlTextL.style.fontSize = '16px';
+        controlTextL.style.lineHeight = '38px';
+        controlTextL.style.paddingLeft = '5px';
+        controlTextL.style.paddingRight = '5px';
+        controlTextL.style.position = 'absolute';
+        controlTextL.style.top = '80px';
+        controlTextL.style.left = '0px';
+        controlTextL.innerHTML = 'Go Left';
+        controlUI.appendChild(controlTextL);
+
+        // Setup the click event listeners: simply set the map to Chicago.
+        controlTextU.addEventListener('click', function() {
+          map.setCenter(myLoc);
+          goUp(marker);
+          marker.setMap(map);
+        });
+        controlTextB.addEventListener('click', function() {
+          map.setCenter(myLoc);
+          goDown(marker);
+          marker.setMap(map);
+        });
+        controlTextL.addEventListener('click', function() {
+          map.setCenter(myLoc);
+          goLeft(marker);
+          marker.setMap(map);
+        });
+        controlTextR.addEventListener('click', function() {
+          map.setCenter(myLoc);
+          goRight(marker);
+          marker.setMap(map);
+        });
+      }
+
+      function goUp(marker) {
+        var newLat=marker.position.lat()+0.001;
+        var oldLng=marker.position.lng();
+        var latlng = new google.maps.LatLng(newLat, oldLng);
+        marker.setPosition(latlng);
+      }
+      function goDown(marker) {
+        var newLat=marker.position.lat()-0.001;
+        var oldLng=marker.position.lng();
+        var latlng = new google.maps.LatLng(newLat, oldLng);
+        marker.setPosition(latlng);
+      }
+      function goLeft(marker) {
+        var newLat=marker.position.lat();
+        var oldLng=marker.position.lng()-0.001;
+        var latlng = new google.maps.LatLng(newLat, oldLng);
+        marker.setPosition(latlng);
+      }
+      function goRight(marker) {
+        var newLat=marker.position.lat();
+        var oldLng=marker.position.lng()+0.001;
+        var latlng = new google.maps.LatLng(newLat, oldLng);
+        marker.setPosition(latlng);
+      }
+            
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: myLoc,
+          zoom: 15
+        });
+        marker = new google.maps.Marker({
+          position: myLoc,
+          map: map
+        });
+        var contentString = '<div id="content">'+
+        '<div id="siteNotice">'+
+        '</div>'+
+        '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
+        '<div id="bodyContent">'+
+        '<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
+        'sandstone rock formation in the southern part of the '+
+        'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) '+
+        'south west of the nearest large town, Alice Springs; 450&#160;km '+
+        '(280&#160;mi) by road. Kata Tjuta and Uluru are the two major '+
+        'features of the Uluru - Kata Tjuta National Park. Uluru is '+
+        'sacred to the Pitjantjatjara and Yankunytjatjara, the '+
+        'Aboriginal people of the area. It has many springs, waterholes, '+
+        'rock caves and ancient paintings. Uluru is listed as a World '+
+        '</div>'+
+        '</div>'; 
+        var markers = locations.map(function(location, i) {
+          return new google.maps.Marker({
+            position: location,
+            map: map
+          });
+        });
+
+        var infowindow = new google.maps.InfoWindow({
+            content: contentString
+        });
+        marker.addListener('click', function() {
+            infowindow.open(map, marker);
+        });
+           
+        var centerControlDiv = document.createElement('div');
+        var centerControl = new CenterControl(centerControlDiv, map);
+        centerControlDiv.index = 1;
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+      
+      }
+      var locations = [
+        {lat:24.998417, lng:121.4312709}, 
+        {lat:25.01168438, lng:121.4590998}, 
+        {lat:25.00484118, lng:121.4616452}, 
+        {lat:24.99445318, lng:121.4624228}, 
+        {lat:25.01216836, lng:121.4653487}, 
+        {lat:25.02894455, lng:121.4684377}, 
+        {lat:25.02697596, lng:121.4773356}, 
+        {lat:25.01568145, lng:121.4819973}, 
+        {lat:25.0146981, lng:121.4825764}, 
+        {lat:24.95207039, lng:121.4865395}, 
+        {lat:24.95382402, lng:121.4937429}, 
+        {lat:24.91094832, lng:121.4977999}, 
+        {lat:24.95388027, lng:121.5000299}, 
+        {lat:24.95198787, lng:121.5092742}, 
+        {lat:24.95861767, lng:121.5098339}, 
+        {lat:24.96130141, lng:121.5141573}, 
+        {lat:24.96628521, lng:121.5148781}, 
+        {lat:24.96881079, lng:121.5149316}, 
+        {lat:24.98461553, lng:121.5181781}, 
+        {lat:24.93781357, lng:121.5313214}, 
+        {lat:24.9756115, lng:121.5318132}, 
+        {lat:24.98575386, lng:121.5322374}, 
+        {lat:24.93941241, lng:121.5322587}, 
+        {lat:24.96030451, lng:121.533583}, 
+        {lat:24.90248122, lng:121.5337663}, 
+        {lat:24.97614645, lng:121.5354804}, 
+        {lat:24.97173767, lng:121.5366389}, 
+        {lat:24.97693066, lng:121.5375579}, 
+        {lat:24.97757929, lng:121.5381923}, 
+        {lat:24.97176951, lng:121.53907}, 
+        {lat:24.95674846, lng:121.5391514}, 
+        {lat:24.91253257, lng:121.5396256}, 
+        {lat:24.95767727, lng:121.5399205}, 
+        {lat:24.9529095, lng:121.5402272}, 
+        {lat:24.9569182, lng:121.5404308}, 
+        {lat:24.97370843, lng:121.5438954}, 
+        {lat:24.96637452, lng:121.5439962}, 
+        {lat:24.98086648, lng:121.5448455}, 
+        {lat:24.9232824, lng:121.5451264}, 
+        {lat:24.98000118, lng:121.5462283}, 
+        {lat:24.92250957, lng:121.5462739}, 
+        {lat:24.90313946, lng:121.5520138}, 
+        {lat:24.95314122, lng:121.552255}, 
+        {lat:24.90219168, lng:121.5532133}, 
+        {lat:24.95145016, lng:121.5754701}, 
+        {lat:25.19703422, lng:121.6321519}, 
+        {lat:25.03493065, lng:121.8631618}, 
+        {lat:25.04374851, lng:121.8653432}, 
+        {lat:25.03192395, lng:121.8659116}, 
+        {lat:25.03366054, lng:121.8664935}
+      ]
+
+
+    </script>
+    <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBobjOg-jfdXYH0dK1sgDYX3OS_5S79SFE&callback=initMap">
+
+    </script>
+
+
+  </body>
+</html>
