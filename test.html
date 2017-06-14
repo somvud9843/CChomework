@@ -173,30 +173,42 @@
         '</div>'+
         '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
         '<div id="bodyContent">'+
-        '<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
-        'sandstone rock formation in the southern part of the '+
-        'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) '+
-        'south west of the nearest large town, Alice Springs; 450&#160;km '+
-        '(280&#160;mi) by road. Kata Tjuta and Uluru are the two major '+
-        'features of the Uluru - Kata Tjuta National Park. Uluru is '+
-        'sacred to the Pitjantjatjara and Yankunytjatjara, the '+
-        'Aboriginal people of the area. It has many springs, waterholes, '+
-        'rock caves and ancient paintings. Uluru is listed as a World '+
+        '<p><b>我的位子</b>'+
         '</div>'+
         '</div>'; 
-        var markers = locations.map(function(location, i) {
-          return new google.maps.Marker({
-            position: location,
-            map: map
-          });
-        });
 
         var infowindow = new google.maps.InfoWindow({
             content: contentString
         });
+
+        var markers = locations.map(function(location, i) {
+          return new google.maps.Marker({
+            position: location,
+            map: map,
+            infowindow: infowindow
+          });
+        });
+
+
         marker.addListener('click', function() {
             infowindow.open(map, marker);
         });
+
+        for(var i=0; i< markers.length; i++) {
+          markers[i].addListener("click", bindClick(i));
+        }
+
+        function bindClick(i) {
+          return function(){
+            infowindow.setContent(loca_name[i]);
+            infowindow.open(map, markers[i]);
+            console.log("you clicked region number " + i);
+          };
+        }
+
+        // markers.addListener('click', function() {
+        //     myinfowindow.open(map, markers);
+        // });
            
         var centerControlDiv = document.createElement('div');
         var centerControl = new CenterControl(centerControlDiv, map);
@@ -204,12 +216,15 @@
         map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
       
       }
+
+      var loca_name = ['溪崑國中', '板橋高中', '忠孝國中', '重慶國小', '私立恆毅高級中學', '江翠國中', '文聖國小', '光復高中', '光復國小', '雙城國小', '雙城活動中心', '康橋高級中學', '達觀國民中小學', '景文科技大學', '德安活動中心', '安坑國小', '私立及人高中', '市立安康高中', '新和國小', '直潭˙國小', '市立新店高中', '私立莊敬工家', '直潭派出所', '頂城活動中心', '廣興里辦公處', '耕莘健康管理專科學校', '中正國小', '大豐社福館', '大豐國小', '私立崇光女中', '市立文山國中', '屈尺國小廣興分校', '文中廣明活動中心', '新店國小', '私立能仁家商', '北新國小', '市立五峰國中', '私立南強工商', '屈尺活動中心', '私立開明工商', '屈尺國小', '龜山活動中心', '青潭國小', '龜山國小', '雙峰國小', '磺潭社區親水公園', '雙溪高中', '中正市民活動中心', '共和市民活動中心', '雙溪國小'];
+
       var locations = [
         {lat:24.998417, lng:121.4312709}, 
         {lat:25.01168438, lng:121.4590998}, 
         {lat:25.00484118, lng:121.4616452}, 
         {lat:24.99445318, lng:121.4624228}, 
-        {lat:25.01216836, lng:121.4653487}, 
+        {lat:25.01216836, lng:121.4653487},
         {lat:25.02894455, lng:121.4684377}, 
         {lat:25.02697596, lng:121.4773356}, 
         {lat:25.01568145, lng:121.4819973}, 
@@ -267,3 +282,7 @@
 
   </body>
 </html>
+
+
+
+
